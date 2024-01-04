@@ -16,7 +16,8 @@ class _HomeScreenState extends State<HomeScreen> {
   var extra = {
     "method": "get",
     "params": {
-      "cid": "HRIRBIIKXMKEOTDDA8VV4HP2V24454X8",
+      "cid":
+          "HRIRBIIKXMKEOTDDA8VV4HP2V24454X8", //Replace the cid value with your CID value which is provided in the docs
       "crossButtonHidden": "true",
     },
   };
@@ -57,7 +58,7 @@ class _HomeScreenState extends State<HomeScreen> {
         token = result['data']['token'];
         setState(() {});
       }
-    });
+    }, jsonObject: extra);
   }
 
   @override
@@ -66,11 +67,25 @@ class _HomeScreenState extends State<HomeScreen> {
       appBar: AppBar(),
       body: Center(
         child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text(
-              "Token : $token",
-              style: const TextStyle(
-                fontSize: 25,
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Row(
+                children: [
+                  const Text(
+                    "Token : ",
+                    style: TextStyle(
+                      fontSize: 20,
+                    ),
+                  ),
+                  Text(
+                    "$token",
+                    style: const TextStyle(
+                      fontSize: 15,
+                    ),
+                  ),
+                ],
               ),
             ),
           ],
