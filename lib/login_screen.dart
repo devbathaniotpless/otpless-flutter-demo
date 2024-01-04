@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:otpless_flutter/otpless_flutter.dart';
 
-class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key});
+class LoginScreen extends StatefulWidget {
+  const LoginScreen({super.key});
 
   @override
-  State<HomeScreen> createState() => _HomeScreenState();
+  State<LoginScreen> createState() => _LoginScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
+class _LoginScreenState extends State<LoginScreen> {
   String? token;
 
   ///Define the instance
