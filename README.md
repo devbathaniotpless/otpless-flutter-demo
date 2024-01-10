@@ -121,15 +121,17 @@ import 'package:otpless_flutter/otpless_flutter.dart';
 
 ```dart
 final _otplessFlutterPlugin = Otpless();
-var extra = {
-	"method": "get",
-	"params": {
-	"cid": "HRIRBIIKXMKEOTDDA8VV4HP2V24454X8"
-	}
-};
+  var extra = {
+    "method": "get",
+    "params": {
+      "cid":
+          "HRIRBIIKXMKEOTDDA8VV4HP2V24454X8", //Replace the cid value with your CID value which is provided in the docs
+      "uxmode": "anf", // Add this code to enable autoclick mode
+    },
+  };
   Future<void> startOtpless() async {
     await _otplessFlutterPlugin.hideFabButton();
-    _otplessFlutterPlugin.openLoginPage((result) {
+    _otplessFlutterPlugin.start((result) {
       if (result['data'] != null) {
         // todo send this token to your backend service to validate otplessUser details received in the callback with OTPless backend service
         token = result['data']['token'];
