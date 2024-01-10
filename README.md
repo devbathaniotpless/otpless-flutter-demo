@@ -1,16 +1,149 @@
-# otpless_flutter_demo
+# Flutter
 
-A new Flutter project.
+Integrating One Tap OTPLESS Sign In into your Flutter Application using our SDK is a streamlined process. This guide offers a comprehensive walkthrough, detailing the steps to install the SDK and seamlessly retrieve user information.
 
-## Getting Started
+1. Install **OTPless SDK** Dependency
 
-This project is a starting point for a Flutter application.
+```json
+flutter pub add otpless_flutter:2.1.0
+```
 
-A few resources to get you started if this is your first Flutter project:
+2. Configure **AndroidManifest.xml**
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+`Android`
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+- Add an intent filter inside your Main Activity code block.
+
+```xml
+<intent-filter>
+<action android:name="android.intent.action.VIEW" />
+<category android:name="android.intent.category.DEFAULT" />
+<category android:name="android.intent.category.BROWSABLE" />
+<data
+	android:host="otpless"
+	android:scheme= "${applicationId}.otpless"/>
+</intent-filter>
+```
+
+- Change your activity launchMode to singleTop and exported true for your Main Activity.
+
+```xml
+android:launchMode="singleTop"
+android:exported="true"
+```
+
+`iOS`
+
+- Copy-paste the following code into your info.plist file.
+
+```xml
+<key>CFBundleURLTypes</key>
+<array>
+    <dict>
+    <key>CFBundleURLSchemes</key>
+    <array>
+    <string>$(PRODUCT_BUNDLE_IDENTIFIER).otpless</string>
+    </array>
+    <key>CFBundleTypeRole</key>
+    <string>Editor</string>
+    <key>CFBundleURLName</key>
+    <string>otpless</string>
+    </dict>
+</array>
+<key>LSApplicationQueriesSchemes</key>
+<array>
+    <string>whatsapp</string>
+    <string>otpless</string>
+    <string>gootpless</string>
+    <string>com.otpless.ios.app.otpless</string>
+    <string>googlegmail</string>
+</array>
+```
+
+- Add the following code into your respective AppDelegate files..
+
+```swift
+import OtplessSDK
+
+//add this inside of class
+override func application(_ app: UIApplication, open url: URL, options: [UIApplication.OpenURLOptionsKey : Any] = [:]) -> Bool {
+super.application(app, open: url, options: options)
+if Otpless.sharedInstance.isOtplessDeeplink(url: url){ Otpless.sharedInstance.processOtplessDeeplink(url: url) }
+return true
+}
+```
+
+3. **Handle Callback**
+
+- Import the following classes.
+
+```xml
+import com.otpless.otplessflutter.OtplessFlutterPlugin;
+import android.content.Intent;
+```
+
+- Add this code to your onNewIntent() method in your main activity.
+
+```kotlin
+override fun onNewIntent(intent: Intent) {
+super.onNewIntent(intent)
+val plugin = flutterEngine?.plugins?.get(OtplessFlutterPlugin::class.java)
+if (plugin is OtplessFlutterPlugin) {
+	plugin.onNewIntent(intent)
+	}
+}
+```
+
+4. **Handle Backpress**
+
+- Add this code to your onBackPressed() method in your main activity.
+
+```kotlin
+override fun onBackPressed() {
+val plugin = flutterEngine?.plugins?.get(OtplessFlutterPlugin::class.java)
+if (plugin is OtplessFlutterPlugin) {
+if (plugin.onBackPressed()) return
+}
+// handle other cases
+super.onBackPressed()
+}
+```
+
+5. **Configure Sign up/Sign in**
+
+- Import the OTPLESS package on your page.
+
+```dart
+import 'package:otpless_flutter/otpless_flutter.dart';
+```
+
+- Add this code to handle callback from OTPLESS SDK.
+
+```dart
+final _otplessFlutterPlugin = Otpless();
+var extra = {
+	"method": "get",
+	"params": {
+	"cid": "HRIRBIIKXMKEOTDDA8VV4HP2V24454X8"
+	}
+};
+  Future<void> startOtpless() async {
+    await _otplessFlutterPlugin.hideFabButton();
+    _otplessFlutterPlugin.openLoginPage((result) {
+      if (result['data'] != null) {
+        // todo send this token to your backend service to validate otplessUser details received in the callback with OTPless backend service
+        token = result['data']['token'];
+        setState(() {});
+      }
+    }, jsonObject: extra);
+  }
+```
+
+[Check out startOtpless()](https://github.com/devbathaniotpless/otpless-flutter-demo/blob/main/lib/login_screen.dart#L53)
+
+**Demo**
+[Demo Video](demo_video.mp4)
+
+# Thank You
+
+# [Visit OTPless](https://otpless.com/platforms/flutter)
