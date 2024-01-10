@@ -21,7 +21,7 @@ flutter pub add otpless_flutter:2.1.0
 <category android:name="android.intent.category.BROWSABLE" />
 <data
 	android:host="otpless"
-	android:scheme= "${applicationId}.otpless"/>
+	android:scheme= "your_login_uri.otpless"/> <!-- Update the your_login_uri here-->
 </intent-filter>
 ```
 
@@ -121,12 +121,16 @@ import 'package:otpless_flutter/otpless_flutter.dart';
 
 ```dart
 final _otplessFlutterPlugin = Otpless();
-var extra = {
-	"method": "get",
-	"params": {
-	"cid": "HRIRBIIKXMKEOTDDA8VV4HP2V24454X8"
-	}
-};
+  var extra = {
+    "method": "get",
+    "params": {
+      "cid":
+          "HRIRBIIKXMKEOTDDA8VV4HP2V24454X8", //Replace the cid value with your CID value which is provided in the docs
+      "login_uri": Platform.isIOS
+          ? "com.flutter.app.otpless://otpless"
+          : "com.flutter.app", // Add this code to override the invalid package id
+    },
+  };
   Future<void> startOtpless() async {
     await _otplessFlutterPlugin.hideFabButton();
     _otplessFlutterPlugin.openLoginPage((result) {
