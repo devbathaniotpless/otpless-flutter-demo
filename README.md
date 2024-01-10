@@ -42,7 +42,7 @@ android:exported="true"
     <dict>
     <key>CFBundleURLSchemes</key>
     <array>
-    <string>$(PRODUCT_BUNDLE_IDENTIFIER).otpless</string>
+    <string>your_login_uri.otpless</string> /* Update the your_login_uri */
     </array>
     <key>CFBundleTypeRole</key>
     <string>Editor</string>
