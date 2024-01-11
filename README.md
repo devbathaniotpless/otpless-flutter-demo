@@ -4,7 +4,7 @@ Integrating One Tap OTPLESS Sign In into your Flutter Application using our SDK 
 
 1. Install **OTPless SDK** Dependency
 
-```json
+```
 flutter pub add otpless_flutter:2.1.0
 ```
 
