@@ -131,6 +131,32 @@ final _otplessFlutterPlugin = Otpless();
       "uxmode": "anf", // Add this code to enable autoclick mode
     },
   };
+
+   // This code will be used to detect the whatsapp installed status in users device
+   // If you are using WHATSAPP login then its reqiured to add this code to hide the OTPless functionality
+  @override
+  void initState() {
+    super.initState();
+
+    //******************************************************** */
+    //This function will tell if WhatsApp is Installed or not
+    //******************************************************** */
+
+    _otplessFlutterPlugin.isWhatsAppInstalled().then(
+      (value) {
+        if (!value) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: const Text("Please install the whatsapp"),
+              backgroundColor: Theme.of(context).hoverColor,
+            ),
+          );
+        }
+      },
+    );
+  }
+
+  //This function is used to trigger OTPless login page
   Future<void> startOtpless() async {
     await _otplessFlutterPlugin.hideFabButton();
     _otplessFlutterPlugin.start((result) {
