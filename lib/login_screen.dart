@@ -80,7 +80,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   Text(
                     "$token",
                     style: const TextStyle(
-                      fontSize: 15,
+                      fontSize: 12,
                     ),
                   ),
                 ],
