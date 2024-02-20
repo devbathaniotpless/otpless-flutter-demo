@@ -34,7 +34,7 @@ class _LoginScreenState extends State<LoginScreen> {
         if (!value) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: const Text("Please install the whatsapp !!!"),
+              content: const Text("Please install the whatsapp"),
               backgroundColor: Theme.of(context).hoverColor,
             ),
           );
