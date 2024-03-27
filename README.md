@@ -126,7 +126,10 @@ final _otplessFlutterPlugin = Otpless();
 var extra = {
 	"method": "get",
 	"params": {
-	"cid": "HRIRBIIKXMKEOTDDA8VV4HP2V24454X8"
+	"cid": "HRIRBIIKXMKEOTDDA8VV4HP2V24454X8",
+  "crossButtonHidden": "true",
+  "appId":
+          "ALP5OU9SMLB3NSPYGNSG" //Replace the appId value with your appId value which is provided in the docs
 	}
 };
 

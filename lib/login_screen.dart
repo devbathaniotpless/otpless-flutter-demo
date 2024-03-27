@@ -19,6 +19,8 @@ class _LoginScreenState extends State<LoginScreen> {
       "cid":
           "HRIRBIIKXMKEOTDDA8VV4HP2V24454X8", //Replace the cid value with your CID value which is provided in the docs
       "crossButtonHidden": "true",
+      "appId":
+          "ALP5OU9SMLB3NSPYGNSG" //Replace the appId value with your appId value which is provided in the docs
     },
   };
 
