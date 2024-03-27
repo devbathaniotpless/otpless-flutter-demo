@@ -23,6 +23,8 @@ class _LoginScreenState extends State<LoginScreen> {
       "login_uri": Platform.isIOS
           ? "com.flutter.app.otpless://otpless"
           : "com.flutter.app", // Add this code to override the invalid package id
+      "appId":
+          "ALP5OU9SMLB3NSPYGNSG" //Replace the appId value with your appId value which is provided in the docs
     },
   };
 
