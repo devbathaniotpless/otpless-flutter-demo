@@ -129,6 +129,8 @@ final _otplessFlutterPlugin = Otpless();
       "cid":
           "HRIRBIIKXMKEOTDDA8VV4HP2V24454X8", //Replace the cid value with your CID value which is provided in the docs
       "uxmode": "anf", // Add this code to enable autoclick mode
+      "appId":
+          "ALP5OU9SMLB3NSPYGNSG" //Replace the appId value with your appId value which is provided in the docs
     },
   };
 
