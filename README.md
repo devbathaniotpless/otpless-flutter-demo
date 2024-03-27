@@ -126,7 +126,9 @@ final _otplessFlutterPlugin = Otpless();
 var extra = {
 	"method": "get",
 	"params": {
-	"cid": "HRIRBIIKXMKEOTDDA8VV4HP2V24454X8"
+	"cid": "HRIRBIIKXMKEOTDDA8VV4HP2V24454X8",
+  "appId":
+          "ALP5OU9SMLB3NSPYGNSG" //Replace the appId value with your appId value which is provided in the docs
 	}
 };
  // This code will be used to detect the whatsapp installed status in users device
