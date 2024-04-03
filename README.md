@@ -21,7 +21,7 @@ flutter pub add otpless_flutter:2.1.0
 <category android:name="android.intent.category.BROWSABLE" />
 <data
 	android:host="otpless"
-	android:scheme= "${applicationId}.otpless"/>
+	android:scheme= "otpless.alp5ou9smlb3nspygnsg"/>
 </intent-filter>
 ```
 
@@ -42,7 +42,7 @@ android:exported="true"
     <dict>
     <key>CFBundleURLSchemes</key>
     <array>
-    <string>$(PRODUCT_BUNDLE_IDENTIFIER).otpless</string>
+    <string>otpless.alp5ou9smlb3nspygnsg</string>
     </array>
     <key>CFBundleTypeRole</key>
     <string>Editor</string>
@@ -123,50 +123,27 @@ import 'package:otpless_flutter/otpless_flutter.dart';
 
 ```dart
 final _otplessFlutterPlugin = Otpless();
-var extra = {
-	"method": "get",
-	"params": {
-	"cid": "HRIRBIIKXMKEOTDDA8VV4HP2V24454X8",
-  "crossButtonHidden": "true",
-  "appId":
-          "ALP5OU9SMLB3NSPYGNSG" //Replace the appId value with your appId value which is provided in the docs
-	}
-};
+  Map<String, dynamic> extra = {
+    'appId': "ALP5OU9SMLB3NSPYGNSG"
+  }; //Replace the appId value with your appId value which is provided in the docs
 
    // This code will be used to detect the whatsapp installed status in users device
    // If you are using WHATSAPP login then its reqiured to add this code to hide the OTPless functionality
   @override
   void initState() {
     super.initState();
-
-    //******************************************************** */
-    //This function will tell if WhatsApp is Installed or not
-    //******************************************************** */
-
-    _otplessFlutterPlugin.isWhatsAppInstalled().then(
-      (value) {
-        if (!value) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: const Text("Please install the whatsapp"),
-              backgroundColor: Theme.of(context).hoverColor,
-            ),
-          );
-        }
-      },
-    );
+    startOtpless();
   }
 
   //This function is used to trigger OTPless login page
   Future<void> startOtpless() async {
-    await _otplessFlutterPlugin.hideFabButton();
     _otplessFlutterPlugin.openLoginPage((result) {
       if (result['data'] != null) {
         // todo send this token to your backend service to validate otplessUser details received in the callback with OTPless backend service
         token = result['data']['token'];
         setState(() {});
       }
-    }, jsonObject: extra);
+    }, extra);
   }
 ```
 
