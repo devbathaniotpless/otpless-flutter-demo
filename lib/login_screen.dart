@@ -9,62 +9,205 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  String? token;
-
-  ///Define the instance
+  String? dataResponse = 'Unknown';
   final _otplessFlutterPlugin = Otpless();
-  Map<String, dynamic> extra = {
-    'appId': "ALP5OU9SMLB3NSPYGNSG"
-  }; //Replace the appId value with your appId value which is provided in the docs
+  var loaderVisibility = true;
+  final TextEditingController phoneNumberContoller = TextEditingController();
+  final TextEditingController otpContoller = TextEditingController();
+  final TextEditingController emailContoller = TextEditingController();
+  String? token;
+  String phoneOrEmail = '';
+  String otp = '';
 
   @override
   void initState() {
     super.initState();
-    startOtpless();
+    _otplessFlutterPlugin.initHeadless("ALP5OU9SMLB3NSPYGNSG");
+    _otplessFlutterPlugin.setHeadlessCallback(onHeadlessResult);
   }
 
-  //************************************************* */
-  //This function will run the login page in the app
-  //************************************************* */
+  void onHeadlessResult(dynamic result) {
+    setState(() {
+      token = result["response"]["token"];
+    });
+  }
 
-  Future<void> startOtpless() async {
+  // ** Function that is called when page is loaded
+  // ** We can check the auth state in this function
+
+  Future<void> openLoginPage() async {
+    Map<String, dynamic> arg = {'appId': "ALP5OU9SMLB3NSPYGNSG"};
     _otplessFlutterPlugin.openLoginPage((result) {
+      String? message;
       if (result['data'] != null) {
-        // todo send this token to your backend service to validate otplessUser details received in the callback with OTPless backend service
-        token = result['data']['token'];
-        setState(() {});
+        final token = result['data']['token'];
+        message = "token: $token";
       }
-    }, extra);
+      setState(() {
+        dataResponse = message ?? "Unknown";
+      });
+    }, arg);
+  }
+
+  Future<void> startHeadlessWithSocialLogin(String loginType) async {
+    Map<String, dynamic> arg = {'channelType': loginType};
+    _otplessFlutterPlugin.startHeadless(onHeadlessResult, arg);
+  }
+
+  Future<void> startHeadlessForPhoneOrEmail() async {
+    Map<String, dynamic> arg = {};
+    if (otpContoller.text.isNotEmpty) {
+      arg["phone"] = phoneNumberContoller.text;
+      arg["countryCode"] = "91";
+      arg["otp"] = otpContoller.text;
+    } else {
+      if (phoneNumberContoller.text.isNotEmpty) {
+        arg["phone"] = phoneNumberContoller.text;
+        arg["countryCode"] = "91";
+      } else if (emailContoller.text.isNotEmpty) {
+        arg["email"] = emailContoller.text;
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text("Please enter phone number or email"),
+          ),
+        );
+      }
+    }
+
+    _otplessFlutterPlugin.startHeadless(onHeadlessResult, arg);
+  }
+
+  Future<void> changeLoaderVisibility() async {
+    loaderVisibility = !loaderVisibility;
+    _otplessFlutterPlugin.setLoaderVisibility(loaderVisibility);
+  }
+
+  @override
+  void dispose() {
+    // Clean up the controller when the widget is disposed.
+    phoneNumberContoller.dispose();
+    otpContoller.dispose();
+    emailContoller.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Row(
-                children: [
-                  const Text(
-                    "Token : ",
-                    style: TextStyle(
-                      fontSize: 20,
-                    ),
-                  ),
-                  Text(
-                    "$token",
-                    style: const TextStyle(
-                      fontSize: 12,
-                    ),
-                  ),
-                ],
+      appBar: AppBar(
+        title: const Text("Headless"),
+      ),
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 15),
+          child: Column(
+            children: [
+              TextField(
+                controller: phoneNumberContoller,
+                keyboardType: TextInputType.number,
+                decoration: const InputDecoration(
+                  hintText: "Phone number",
+                ),
               ),
-            ),
-          ],
+              const SizedBox(height: 10),
+              TextField(
+                controller: emailContoller,
+                decoration: const InputDecoration(
+                  hintText: "Email",
+                ),
+              ),
+              const SizedBox(height: 50),
+              TextField(
+                controller: otpContoller,
+                keyboardType: TextInputType.number,
+                decoration: const InputDecoration(
+                  hintText: "OTP",
+                ),
+              ),
+              const SizedBox(height: 20),
+              InkWell(
+                onTap: () {
+                  startHeadlessForPhoneOrEmail();
+                },
+                child: Container(
+                  height: 45,
+                  width: MediaQuery.sizeOf(context).width,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(8),
+                    border: Border.all(color: Colors.black54),
+                  ),
+                  child:
+                      const Center(child: Text("Start with Phone and Email")),
+                ),
+              ),
+              const SizedBox(height: 50),
+              const Text(
+                "Socail Logins",
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              const SizedBox(height: 20),
+              SizedBox(
+                height: 50,
+                child: GridView.builder(
+                  itemCount: 2,
+                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 2,
+                    childAspectRatio: 22 / 5,
+                    crossAxisSpacing: 10,
+                  ),
+                  itemBuilder: (context, index) {
+                    return InkWell(
+                      onTap: () {
+                        startHeadlessWithSocialLogin(
+                          index == 0 ? "WHATSAPP" : "GOOGLE",
+                        );
+                      },
+                      child: Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(8),
+                          border: Border.all(color: Colors.black54),
+                        ),
+                        child: Center(
+                          child: Text(index == 0 ? "WhatsApp" : "Google"),
+                        ),
+                      ),
+                    );
+                  },
+                ),
+              ),
+              const SizedBox(height: 50),
+              const Text(
+                "Login Page",
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              const SizedBox(height: 20),
+              InkWell(
+                onTap: () {
+                  openLoginPage();
+                },
+                child: Container(
+                  height: 45,
+                  width: MediaQuery.sizeOf(context).width,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(8),
+                    border: Border.all(color: Colors.black54),
+                  ),
+                  child: const Center(
+                    child: Text("Start Login Page"),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 20),
+              Text(token ?? "Token null"),
+            ],
+          ),
         ),
       ),
     );
