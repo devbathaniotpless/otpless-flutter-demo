@@ -10,25 +10,33 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
   String? token;
+  String? dataResponse = 'Unknown';
 
   ///Define the instance
   final _otplessFlutterPlugin = Otpless();
   Map<String, dynamic> extra = {
-    'appId': "ALP5OU9SMLB3NSPYGNSG"
+    'appId': "YOUR_APP_ID"
   }; //Replace the appId value with your appId value which is provided in the docs
 
   //************************************************* */
   //This function will run the login page in the app
   //************************************************* */
 
-  Future<void> startOtpless() async {
+  // ** Function that is called when page is loaded
+  // ** We can check the auth state in this function
+
+  Future<void> openLoginPage() async {
+    Map<String, dynamic> arg = {'appId': "YOUR_APP_ID"};
     _otplessFlutterPlugin.openLoginPage((result) {
+      String? message;
       if (result['data'] != null) {
-        // todo send this token to your backend service to validate otplessUser details received in the callback with OTPless backend service
-        token = result['data']['token'];
-        setState(() {});
+        final token = result["response"]["token"];
+        message = "token: $token";
       }
-    }, extra);
+      setState(() {
+        dataResponse = message ?? "Unknown";
+      });
+    }, arg);
   }
 
   @override
@@ -65,7 +73,7 @@ class _LoginScreenState extends State<LoginScreen> {
               children: [
                 ElevatedButton(
                   onPressed: () {
-                    startOtpless();
+                    openLoginPage();
                   },
                   child: const Text("Login"),
                 ),
