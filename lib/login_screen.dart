@@ -40,7 +40,7 @@ class _LoginScreenState extends State<LoginScreen> {
     _otplessFlutterPlugin.openLoginPage((result) {
       String? message;
       if (result['data'] != null) {
-        final token = result['data']['token'];
+        final token = result['response']['token'];
         message = "token: $token";
       }
       setState(() {
