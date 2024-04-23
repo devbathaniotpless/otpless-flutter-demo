@@ -21,7 +21,7 @@ flutter pub add otpless_flutter:2.1.0
 <category android:name="android.intent.category.BROWSABLE" />
 <data
 	android:host="otpless"
-	android:scheme= "otpless.alp5ou9smlb3nspygnsg"/>
+	android:scheme= "otpless.{{"YOUR_APP_ID"}}"/>
 </intent-filter>
 ```
 
@@ -42,7 +42,7 @@ android:exported="true"
     <dict>
     <key>CFBundleURLSchemes</key>
     <array>
-    <string>otpless.alp5ou9smlb3nspygnsg</string>
+    <string>otpless.{{"YOUR_APP_ID"}}</string>
     </array>
     <key>CFBundleTypeRole</key>
     <string>Editor</string>
@@ -123,27 +123,34 @@ import 'package:otpless_flutter/otpless_flutter.dart';
 
 ```dart
 final _otplessFlutterPlugin = Otpless();
-  Map<String, dynamic> extra = {
-    'appId': "ALP5OU9SMLB3NSPYGNSG"
-  }; //Replace the appId value with your appId value which is provided in the docs
+  String? token;
+  String? dataResponse = 'Unknown';
 
-   // This code will be used to detect the whatsapp installed status in users device
-   // If you are using WHATSAPP login then its reqiured to add this code to hide the OTPless functionality
+  ///Define the instance
+  final _otplessFlutterPlugin = Otpless();
+
   @override
   void initState() {
     super.initState();
-    startOtpless();
+    openLoginPage();
   }
 
-  //This function is used to trigger OTPless login page
-  Future<void> startOtpless() async {
+  //************************************************* */
+  //This function will run the login page in the app
+  //************************************************* */
+
+  Future<void> openLoginPage() async {
+    Map<String, dynamic> arg = {'appId': "YOUR_APP_ID"};
     _otplessFlutterPlugin.openLoginPage((result) {
+      String? message;
       if (result['data'] != null) {
-        // todo send this token to your backend service to validate otplessUser details received in the callback with OTPless backend service
-        token = result['data']['token'];
-        setState(() {});
+        final token = result['response']['token'];
+        message = "token: $token";
       }
-    }, extra);
+      setState(() {
+        dataResponse = message ?? "Unknown";
+      });
+    }, arg);
   }
 ```
 
