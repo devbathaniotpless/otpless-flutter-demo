@@ -5,7 +5,7 @@ Integrating One Tap OTPLESS Sign In into your Flutter Application using our SDK 
 1. Install **OTPless SDK** Dependency
 
 ```
-flutter pub add otpless_flutter:2.1.0
+flutter pub add otpless_flutter:2.1.3
 ```
 
 2. Configure **AndroidManifest.xml**
@@ -21,7 +21,7 @@ flutter pub add otpless_flutter:2.1.0
 <category android:name="android.intent.category.BROWSABLE" />
 <data
 	android:host="otpless"
-	android:scheme= "otpless.alp5ou9smlb3nspygnsg"/>
+	android:scheme= "otpless.{{"YOUR_APP_ID"}}"/>
 </intent-filter>
 ```
 
@@ -42,7 +42,7 @@ android:exported="true"
     <dict>
     <key>CFBundleURLSchemes</key>
     <array>
-    <string>otpless.alp5ou9smlb3nspygnsg</string>
+    <string>otpless.{{"YOUR_APP_ID"}}</string>
     </array>
     <key>CFBundleTypeRole</key>
     <string>Editor</string>
@@ -122,29 +122,89 @@ import 'package:otpless_flutter/otpless_flutter.dart';
 - Add this code to handle callback from OTPLESS SDK.
 
 ```dart
-final _otplessFlutterPlugin = Otpless();
-  Map<String, dynamic> extra = {
-    'appId': "ALP5OU9SMLB3NSPYGNSG"
-  }; //Replace the appId value with your appId value which is provided in the docs
+ String? dataResponse = 'Unknown';
+  final _otplessFlutterPlugin = Otpless();
+  var loaderVisibility = true;
+  final TextEditingController phoneNumberContoller = TextEditingController();
+  final TextEditingController otpContoller = TextEditingController();
+  final TextEditingController emailContoller = TextEditingController();
+  String? token;
+  String phoneOrEmail = '';
+  String otp = '';
 
-   // This code will be used to detect the whatsapp installed status in users device
-   // If you are using WHATSAPP login then its reqiured to add this code to hide the OTPless functionality
   @override
   void initState() {
     super.initState();
-    startOtpless();
+    _otplessFlutterPlugin.initHeadless("YOUR_APP_ID");
+    _otplessFlutterPlugin.setHeadlessCallback(onHeadlessResult);
   }
 
-  //This function is used to trigger OTPless login page
-  Future<void> startOtpless() async {
-    _otplessFlutterPlugin.openLoginPage((result) {
-      if (result['data'] != null) {
-        // todo send this token to your backend service to validate otplessUser details received in the callback with OTPless backend service
-        token = result['data']['token'];
-        setState(() {});
-      }
-    }, extra);
+  void onHeadlessResult(dynamic result) {
+    setState(() {
+      token = result["response"]["token"];
+    });
   }
+
+  // ** Function that is called when page is loaded
+  // ** We can check the auth state in this function
+
+  Future<void> openLoginPage() async {
+    Map<String, dynamic> arg = {'appId': "YOUR_APP_ID"};
+    _otplessFlutterPlugin.openLoginPage((result) {
+      String? message;
+      if (result['data'] != null) {
+        final token = result['data']['token'];
+        message = "token: $token";
+      }
+      setState(() {
+        dataResponse = message ?? "Unknown";
+      });
+    }, arg);
+  }
+
+  Future<void> startHeadlessWithSocialLogin(String loginType) async {
+    Map<String, dynamic> arg = {'channelType': loginType};
+    _otplessFlutterPlugin.startHeadless(onHeadlessResult, arg);
+  }
+
+  Future<void> startHeadlessForPhoneOrEmail() async {
+    Map<String, dynamic> arg = {};
+    if (otpContoller.text.isNotEmpty) {
+      arg["phone"] = phoneNumberContoller.text;
+      arg["countryCode"] = "91";
+      arg["otp"] = otpContoller.text;
+    } else {
+      if (phoneNumberContoller.text.isNotEmpty) {
+        arg["phone"] = phoneNumberContoller.text;
+        arg["countryCode"] = "91";
+      } else if (emailContoller.text.isNotEmpty) {
+        arg["email"] = emailContoller.text;
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text("Please enter phone number or email"),
+          ),
+        );
+      }
+    }
+
+    _otplessFlutterPlugin.startHeadless(onHeadlessResult, arg);
+  }
+
+  Future<void> changeLoaderVisibility() async {
+    loaderVisibility = !loaderVisibility;
+    _otplessFlutterPlugin.setLoaderVisibility(loaderVisibility);
+  }
+
+  @override
+  void dispose() {
+    // Clean up the controller when the widget is disposed.
+    phoneNumberContoller.dispose();
+    otpContoller.dispose();
+    emailContoller.dispose();
+    super.dispose();
+  }
+
 ```
 
 [Check out startOtpless()](https://github.com/devbathaniotpless/otpless-flutter-demo/blob/main/lib/login_screen.dart#L53)
