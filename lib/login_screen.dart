@@ -14,9 +14,6 @@ class _LoginScreenState extends State<LoginScreen> {
 
   ///Define the instance
   final _otplessFlutterPlugin = Otpless();
-  Map<String, dynamic> extra = {
-    'appId': "YOUR_APP_ID"
-  }; //Replace the appId value with your appId value which is provided in the docs
 
   //************************************************* */
   //This function will run the login page in the app
