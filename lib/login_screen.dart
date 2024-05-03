@@ -18,12 +18,18 @@ class _LoginScreenState extends State<LoginScreen> {
   String? token;
   String phoneOrEmail = '';
   String otp = '';
+  bool isWhatsAppInstalled = true;
 
   @override
   void initState() {
     super.initState();
+    // Add your app id 'https://otpless.com/dashboard/customer/dev-settings'
     _otplessFlutterPlugin.initHeadless("ALP5OU9SMLB3NSPYGNSG");
     _otplessFlutterPlugin.setHeadlessCallback(onHeadlessResult);
+    //Add this code to check if whatsapp is installed on device our not
+    _otplessFlutterPlugin.isWhatsAppInstalled().then((value) {
+      isWhatsAppInstalled = value;
+    });
   }
 
   void onHeadlessResult(dynamic result) {
