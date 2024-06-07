@@ -64,12 +64,12 @@ class _LoginScreenState extends State<LoginScreen> {
     Map<String, dynamic> arg = {};
     if (otpContoller.text.isNotEmpty) {
       arg["phone"] = phoneNumberContoller.text;
-      arg["countryCode"] = "91";
+      arg["countryCode"] = "+91";
       arg["otp"] = otpContoller.text;
     } else {
       if (phoneNumberContoller.text.isNotEmpty) {
         arg["phone"] = phoneNumberContoller.text;
-        arg["countryCode"] = "91";
+        arg["countryCode"] = "+91";
       } else if (emailContoller.text.isNotEmpty) {
         arg["email"] = emailContoller.text;
       } else {
