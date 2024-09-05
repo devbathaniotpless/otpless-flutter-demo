@@ -30,7 +30,7 @@
                 <category android:name="android.intent.category.BROWSABLE" />
                 <data
                     android:host="otpless"
-                    android:scheme= "otpless.alp5ou9smlb3nspygnsg"/>
+                    android:scheme= "oauth"/>
             </intent-filter>
         </activity>
         <!-- Don't delete the meta-data below.
