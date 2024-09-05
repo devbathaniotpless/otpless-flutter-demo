@@ -14,7 +14,37 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
   String responseData = "null";
-  final appLinks = AppLinks(); // AppLinks is singleton
+  final appLinks = AppLinks();
+  // List of items
+  final List<String> _items = [
+    'WHATSAPP',
+    'TWITTER',
+    'GOOGLE',
+    'APPLE',
+    'LINKEDIN',
+    'MICROSOFT',
+    'FACEBOOK',
+    'INSTAGRAM',
+    'LINE',
+    'SLACK',
+    'TRUE_CALLER',
+    'DROPBOX',
+    'GITHUB',
+    'BITBUCKET',
+    'ATLASSIAN',
+    'LINEAR',
+    'GITLAB',
+    'TIKTOK',
+    'TWITCH',
+    'TELEGRAM',
+    'HUBSPOT',
+    'NOTION',
+    'BOX',
+    'XERO'
+  ];
+
+  // Selected item
+  String? _selectedItem;
   var headers = {
     'Content-Type': 'application/json',
     'clientId': 'YOUR_CLIENT_ID',
@@ -95,46 +125,76 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
               ),
               const SizedBox(height: 20),
-              SizedBox(
-                height: 100,
-                child: GridView.builder(
-                  itemCount: 3,
-                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 2,
-                    childAspectRatio: 22 / 6,
-                    crossAxisSpacing: 10,
+              Container(
+                width: double.infinity, // Full width
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(8),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.grey.withOpacity(0.5),
+                      spreadRadius: 2,
+                      blurRadius: 5,
+                      offset: const Offset(0, 2),
+                    ),
+                  ],
+                ),
+                child: Padding(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+                  child: DropdownButton<String>(
+                    value: _selectedItem,
+                    isExpanded: true, // Make it fill the width
+                    hint: const Text('Select a channel'),
+                    icon: const Icon(Icons.keyboard_arrow_down),
+                    underline: const SizedBox(), // Remove default underline
+                    items: _items.map((String item) {
+                      return DropdownMenuItem<String>(
+                        value: item,
+                        child: Text(item),
+                      );
+                    }).toList(),
+                    onChanged: (String? newValue) {
+                      setState(() {
+                        _selectedItem = newValue;
+                      });
+                    },
                   ),
-                  itemBuilder: (context, index) {
-                    return InkWell(
-                      onTap: () {
-                        oAuthAppLogin(
-                          index == 0
-                              ? "WHATSAPP"
-                              : index == 1
-                                  ? "FACEBOOK"
-                                  : "GOOGLE",
-                        );
-                      },
-                      child: Padding(
-                        padding: const EdgeInsets.only(bottom: 10),
-                        child: Container(
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(8),
-                            border: Border.all(color: Colors.black54),
+                ),
+              ),
+              const SizedBox(height: 20),
+              Center(
+                child: ElevatedButton(
+                  onPressed: () {
+                    if (_selectedItem == null) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: const Text('Please select channel'),
+                          behavior: SnackBarBehavior
+                              .floating, // Makes the SnackBar floating
+                          backgroundColor:
+                              Colors.red, // Customize background color
+                          duration: const Duration(
+                              seconds: 2), // How long the SnackBar will stay
+                          shape: RoundedRectangleBorder(
+                            // Rounded corners for SnackBar
+                            borderRadius: BorderRadius.circular(10),
                           ),
-                          child: Center(
-                            child: Text(
-                              index == 0
-                                  ? "WhatsApp"
-                                  : index == 1
-                                      ? "Facebook"
-                                      : "Google",
-                            ),
-                          ),
+                          margin: const EdgeInsets.all(
+                              16), // Margin for floating effect
                         ),
-                      ),
-                    );
+                      );
+                    } else {
+                      oAuthAppLogin(_selectedItem!);
+                    }
                   },
+                  style: ElevatedButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 24, vertical: 12), // Padding for the button
+                    textStyle: const TextStyle(
+                        fontSize: 18), // Font size of the button text
+                  ),
+                  child: const Text('Initiate'),
                 ),
               ),
               const SizedBox(height: 50),
