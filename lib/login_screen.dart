@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:installed_apps/installed_apps.dart';
 import 'package:otpless_flutter/otpless_flutter.dart';
 import 'package:phone_number_hint/phone_number_hint.dart';
+import 'package:sms_retriever_api_plus/sms_retriever_api_plus.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -20,14 +21,14 @@ class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController phoneNumberContoller = TextEditingController();
   final TextEditingController otpContoller = TextEditingController();
   final TextEditingController emailContoller = TextEditingController();
-  String? token;
+  String responseData = "null";
   String phoneOrEmail = '';
   String otp = '';
   bool isWhatsAppInstalled = true;
   bool? isTrueCallerInstalled = true;
   final String result = 'Unknown';
-  String signature = "";
   final phoneNumberHintPlugin = PhoneNumberHint();
+  bool isLoading = false;
 
   @override
   void initState() {
@@ -39,13 +40,44 @@ class _LoginScreenState extends State<LoginScreen> {
     _otplessFlutterPlugin.isWhatsAppInstalled().then((value) {
       isWhatsAppInstalled = value;
     });
-
     isTruecallerInstalled();
+    getSignature();
   }
 
-  void onHeadlessResult(dynamic result) {
+  Future<void> getSignature() async {
+    String signature = "";
+    try {
+      signature = await SmsRetrieverApiPlus.getSignature() ??
+          'Unknown platform version';
+
+      print("signature$signature");
+    } catch (e) {
+      debugPrint(e.toString());
+    }
+    if (!mounted) return;
+  }
+
+  void onHeadlessResult(result) {
     if (result['statusCode'] == 200) {
       switch (result['responseType'] as String) {
+        case "INITIATE":
+          {
+            print("INITIATE  ${result["response"]}");
+
+            responseData = result.toString();
+            setState(() {});
+            break;
+          }
+
+        case "VERIFY":
+          {
+            print("VERIFY  ${result["response"]}");
+
+            responseData = result.toString();
+            setState(() {});
+            break;
+          }
+
         case 'OTP_AUTO_READ':
           {
             if (Platform.isAndroid) {
@@ -60,9 +92,12 @@ class _LoginScreenState extends State<LoginScreen> {
           break;
         case 'ONETAP':
           {
+            print("ONETAP  ${result["response"]}");
             setState(() {
-              token = result["response"]["token"];
+              isLoading = false;
             });
+            responseData = result.toString();
+            setState(() {});
           }
       }
     } else {
@@ -83,23 +118,42 @@ class _LoginScreenState extends State<LoginScreen> {
   // Platform messages are asynchronous, so we initialize in an async method.
   Future<void> getPhoneNumber() async {
     String? result;
-    // Platform messages may fail, so we use a try/catch PlatformException.
-    // We also handle the message potentially returning null.
+
     try {
       result = await phoneNumberHintPlugin.requestHint() ?? '';
+
+      // Clean and normalize the phone number to 10 digits
+      result = _normalizePhoneNumber(result);
+
       phoneNumberContoller.text = result;
     } on PlatformException {
       result = 'Failed to get hint.';
     }
 
-    // If the widget was removed from the tree while the asynchronous platform
-    // message was in flight, we want to discard the reply rather than calling
-    // setState to update our non-existent appearance.
+    // Ensure widget is still mounted
     if (!mounted) return;
 
     setState(() {
       result = result ?? '';
     });
+  }
+
+  String _normalizePhoneNumber(String phoneNumber) {
+    // Remove non-numeric characters (like spaces, dashes, and parentheses)
+    String cleanedNumber = phoneNumber.replaceAll(RegExp(r'\D'), '');
+
+    // If the cleaned number has more than 10 digits, trim it to the last 10 digits
+    if (cleanedNumber.length > 10) {
+      cleanedNumber = cleanedNumber.substring(cleanedNumber.length - 10);
+    }
+
+    // Ensure that only a 10-digit number is returned
+    if (cleanedNumber.length == 10) {
+      return cleanedNumber;
+    } else {
+      // Return an empty string or an error message if the number isn't valid
+      return 'Invalid phone number';
+    }
   }
 
   // ** Function that is called when page is loaded
@@ -108,17 +162,11 @@ class _LoginScreenState extends State<LoginScreen> {
   Future<void> openLoginPage() async {
     Map<String, dynamic> arg = {'appId': "ALP5OU9SMLB3NSPYGNSG"};
     _otplessFlutterPlugin.openLoginPage((result) {
-      String? message;
       if (result['data'] != null) {
         setState(() {
-          token = result["response"]["token"];
+          responseData = result.toString();
         });
-
-        message = "token: $token";
       }
-      setState(() {
-        dataResponse = message ?? "Unknown";
-      });
     }, arg);
   }
 
@@ -152,7 +200,9 @@ class _LoginScreenState extends State<LoginScreen> {
         );
       }
     }
-
+    setState(() {
+      isLoading = true;
+    });
     _otplessFlutterPlugin.startHeadless(onHeadlessResult, arg);
   }
 
@@ -184,6 +234,11 @@ class _LoginScreenState extends State<LoginScreen> {
               TextField(
                 controller: phoneNumberContoller,
                 keyboardType: TextInputType.number,
+                onTap: () {
+                  if (phoneNumberContoller.text.isEmpty) {
+                    getPhoneNumber();
+                  }
+                },
                 decoration: const InputDecoration(
                   hintText: "Phone number",
                 ),
@@ -277,13 +332,15 @@ class _LoginScreenState extends State<LoginScreen> {
                     borderRadius: BorderRadius.circular(8),
                     border: Border.all(color: Colors.black54),
                   ),
-                  child: const Center(
-                    child: Text("Start Login Page"),
+                  child: Center(
+                    child: isLoading
+                        ? const CircularProgressIndicator()
+                        : const Text("Start Login Page"),
                   ),
                 ),
               ),
               const SizedBox(height: 20),
-              Text(token ?? "Token null"),
+              Text(responseData),
             ],
           ),
         ),

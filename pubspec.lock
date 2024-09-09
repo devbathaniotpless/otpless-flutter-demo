@@ -181,6 +181,14 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.99"
+  sms_retriever_api_plus:
+    dependency: "direct main"
+    description:
+      name: sms_retriever_api_plus
+      sha256: d103907b4082b242ea06e52506710b8061c7552b4c5fd4185ab9683697eef81e
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.0.3"
   source_span:
     dependency: transitive
     description:

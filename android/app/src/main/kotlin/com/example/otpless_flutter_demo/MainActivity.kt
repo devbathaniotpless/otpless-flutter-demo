@@ -1,4 +1,4 @@
-package com.example.otpless_flutter_demo
+package com.flutter.app
 
 import io.flutter.embedding.android.FlutterActivity
 import com.otpless.otplessflutter.OtplessFlutterPlugin;
