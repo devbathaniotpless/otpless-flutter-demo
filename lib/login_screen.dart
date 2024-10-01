@@ -160,6 +160,7 @@ class _LoginScreenState extends State<LoginScreen> {
   // ** We can check the auth state in this function
 
   Future<void> openLoginPage() async {
+    _otplessFlutterPlugin.setLoaderVisibility(false);
     Map<String, dynamic> arg = {'appId': "ALP5OU9SMLB3NSPYGNSG"};
     _otplessFlutterPlugin.openLoginPage((result) {
       if (result['data'] != null) {
@@ -206,11 +207,6 @@ class _LoginScreenState extends State<LoginScreen> {
     _otplessFlutterPlugin.startHeadless(onHeadlessResult, arg);
   }
 
-  Future<void> changeLoaderVisibility() async {
-    loaderVisibility = !loaderVisibility;
-    _otplessFlutterPlugin.setLoaderVisibility(loaderVisibility);
-  }
-
   @override
   void dispose() {
     // Clean up the controller when the widget is disposed.
@@ -223,6 +219,7 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.grey,
       appBar: AppBar(
         title: const Text("Headless"),
       ),
