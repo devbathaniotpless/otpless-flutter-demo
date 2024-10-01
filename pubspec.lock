@@ -84,10 +84,10 @@ packages:
     dependency: "direct main"
     description:
       name: installed_apps
-      sha256: b4db1c5a74fbedb2d782f734878e84b156673b332f45a4db71048df5d565f13d
+      sha256: "34d001c74632fe4f10aa460a143d73050ea666f8f83d05a2bc84b2a0a91cf897"
       url: "https://pub.dev"
     source: hosted
-    version: "1.5.0"
+    version: "1.5.2"
   leak_tracker:
     dependency: transitive
     description:
@@ -148,10 +148,10 @@ packages:
     dependency: "direct main"
     description:
       name: otpless_flutter
-      sha256: "181510bd17bfc8a50848e210ffe027aacabb045f51869177fbeb808fa87395d9"
+      sha256: f85b1e85abc8d3cf844533e2fa968c6fc82a75089d235226698be06348406d3f
       url: "https://pub.dev"
     source: hosted
-    version: "2.1.8"
+    version: "2.1.9"
   path:
     dependency: transitive
     description:

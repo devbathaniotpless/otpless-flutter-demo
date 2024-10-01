@@ -2,6 +2,7 @@
     <application
         android:label="Otpless Flutter Demo"
         android:name="${applicationName}"
+        android:networkSecurityConfig="@xml/otpless_network_security_config"
         android:icon="@mipmap/ic_launcher">
         <activity
             android:name=".MainActivity"

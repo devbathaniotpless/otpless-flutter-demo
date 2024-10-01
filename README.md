@@ -5,7 +5,7 @@ Integrating One Tap OTPLESS Sign In into your Flutter Application using our SDK 
 1. Install **OTPless SDK** Dependency
 
 ```
-flutter pub add otpless_flutter:2.1.8
+flutter pub add otpless_flutter:2.1.9
 ```
 
 2. Configure **AndroidManifest.xml**
@@ -30,6 +30,12 @@ flutter pub add otpless_flutter:2.1.8
 ```xml
 android:launchMode="singleTop"
 android:exported="true"
+```
+
+- Add this networkSecurityConfig in `application` tag to use SNA
+
+```xml
+android:networkSecurityConfig="@xml/otpless_network_security_config"
 ```
 
 `iOS`
@@ -75,7 +81,7 @@ import OtplessSDK
   }
 ```
 
-3. **Handle Callback**
+1. **Handle Callback**
 
 - Import the following classes.
 
