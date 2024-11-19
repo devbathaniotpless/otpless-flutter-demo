@@ -147,7 +147,7 @@ import 'package:otpless_flutter/otpless_flutter.dart';
   void initState() {
     super.initState();
     // Add your app id 'https://otpless.com/dashboard/customer/dev-settings'
-    _otplessFlutterPlugin.initHeadless("ALP5OU9SMLB3NSPYGNSG");
+    _otplessFlutterPlugin.initHeadless("sudju2n3m8q5xb3h6hn5");
     _otplessFlutterPlugin.setHeadlessCallback(onHeadlessResult);
     //Add this code to check if whatsapp is installed on device our not
     _otplessFlutterPlugin.isWhatsAppInstalled().then((value) {
@@ -220,7 +220,7 @@ import 'package:otpless_flutter/otpless_flutter.dart';
   // ** We can check the auth state in this function
 
   Future<void> openLoginPage() async {
-    Map<String, dynamic> arg = {'appId': "ALP5OU9SMLB3NSPYGNSG"};
+    Map<String, dynamic> arg = {'appId': "sudju2n3m8q5xb3h6hn5"};
     _otplessFlutterPlugin.openLoginPage((result) {
       String? message;
       if (result['data'] != null) {
