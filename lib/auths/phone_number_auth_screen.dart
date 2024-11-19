@@ -70,6 +70,7 @@ class _PhoneNumberAuthScreenState extends State<PhoneNumberAuthScreen> {
       if (phoneNumberContoller.text.isNotEmpty) {
         arg["phone"] = phoneNumberContoller.text;
         arg["countryCode"] = "+91";
+        arg["deliveryChannel"] = "SMS";
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
