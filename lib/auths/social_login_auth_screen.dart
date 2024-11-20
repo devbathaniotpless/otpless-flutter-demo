@@ -96,7 +96,7 @@ class _SocialLoginAuthScreenState extends State<SocialLoginAuthScreen> {
           child: Column(
             children: [
               const SizedBox(height: 50),
-              DropdownButton<SocialPlatforms>(
+              DropdownButtonFormField<SocialPlatforms>(
                 hint: const Text("Select a platform"),
                 value: _selectedPlatform,
                 onChanged: (SocialPlatforms? newValue) {
@@ -122,6 +122,20 @@ class _SocialLoginAuthScreenState extends State<SocialLoginAuthScreen> {
                     child: Text(platform.toString().split('.').last),
                   );
                 }).toList(),
+                decoration: InputDecoration(
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8),
+                    borderSide: const BorderSide(color: Colors.black),
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8),
+                    borderSide: const BorderSide(color: Colors.black),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8),
+                    borderSide: const BorderSide(color: Colors.black),
+                  ),
+                ),
               ),
               const SizedBox(height: 20),
               SizedBox(
