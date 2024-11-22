@@ -86,50 +86,54 @@ class _PhoneNumberAuthScreenState extends State<PhoneNumberAuthScreen> {
   }
 
   void onHeadlessResult(result) {
-    if (result['statusCode'] == 200) {
-      switch (result['responseType'] as String) {
-        case "INITIATE":
-          {
-            print("INITIATE  ${result["response"]}");
+    switch (result['responseType'] as String) {
+      case "INITIATE":
+        {
+          print("INITIATE  ${result["response"]}");
 
-            responseData = result.toString();
-            setState(() {});
-            break;
-          }
-
-        case "VERIFY":
-          {
-            print("VERIFY  ${result["response"]}");
-
-            responseData = result.toString();
-            setState(() {});
-            break;
-          }
-
-        case 'OTP_AUTO_READ':
-          {
-            if (Platform.isAndroid) {
-              var otp = result['response']['otp'] as String;
-              print(otp);
-              setState(() {
-                otpContoller.text = otp;
-              });
-              sendPhoneNumberRequest();
-            }
-          }
+          responseData = result.toString();
+          setState(() {});
           break;
-        case 'ONETAP':
-          {
-            print("ONETAP  ${result["response"]}");
+        }
+
+      case "VERIFY":
+        {
+          print("VERIFY  ${result["response"]}");
+
+          responseData = result.toString();
+          setState(() {});
+          break;
+        }
+      case "FALLBACK_TRIGGERED":
+        {
+          print("FALLBACK_TRIGGERED  ${result["response"]}");
+
+          responseData = result.toString();
+          setState(() {});
+          break;
+        }
+
+      case 'OTP_AUTO_READ':
+        {
+          if (Platform.isAndroid) {
+            var otp = result['response']['otp'] as String;
+            print(otp);
             setState(() {
-              isLoading = false;
+              otpContoller.text = otp;
             });
-            responseData = result.toString();
-            setState(() {});
+            sendPhoneNumberRequest();
           }
-      }
-    } else {
-      //todo
+        }
+        break;
+      case 'ONETAP':
+        {
+          print("ONETAP  ${result["response"]}");
+          setState(() {
+            isLoading = false;
+          });
+          responseData = result.toString();
+          setState(() {});
+        }
     }
   }
 
