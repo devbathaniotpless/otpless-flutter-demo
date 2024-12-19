@@ -30,7 +30,7 @@ class _LoginScreenState extends State<LoginScreen> {
       signature = await SmsRetrieverApiPlus.getSignature() ??
           'Unknown platform version';
 
-      print("signature$signature");
+      print("signature : $signature");
     } catch (e) {
       debugPrint(e.toString());
     }
