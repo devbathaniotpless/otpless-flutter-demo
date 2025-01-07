@@ -27,7 +27,7 @@ class _LoginScreenState extends State<LoginScreen> {
       print("Result : $result");
       setState(() {
         if (result['data'] != null) {
-          data = result;
+          data = result['data'].toString();
         } else {
           data = result['errorMessage'];
         }
